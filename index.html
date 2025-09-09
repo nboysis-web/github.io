@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finders Keepers League - Weekly Recap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral -->
+    <!-- Application Structure Plan: The application is designed as a single-page dashboard with three main, navigable sections: "Matchup Recaps," "League Analysis," and "Weekly Headlines." This structure was chosen to organize the dense information from the report into user-centric views. Instead of a long scroll, users can directly access the content they care about most. The default "Matchup Recaps" view uses a card-based layout for easy scanning of individual games. The "League Analysis" provides a high-level, visual overview of weekly performance, and "Headlines" isolates the key narratives. This thematic separation enhances usability and allows for different levels of engagement, from a quick glance at scores to a deeper dive into player performances. -->
+    <!-- Visualization & Content Choices: 
+    1. Matchup Scores -> Goal: Compare -> Presentation: Interactive Cards (HTML/CSS) -> Interaction: A 'toggle details' button on each card reveals top player stats. Justification: This keeps the primary view clean and focused on the outcome, while allowing users to optionally drill down for more context without leaving the page. Method: Vanilla JS DOM manipulation.
+    2. Weekly Team Scores -> Goal: Organize/Compare -> Presentation: Horizontal Bar Chart (Chart.js) -> Interaction: Tooltips on hover for precise scores and a sort button to rank teams by performance. Justification: A horizontal bar chart is excellent for comparing values across categories with long names (team names). It provides an immediate visual hierarchy of the league's weekly performance. Method: Chart.js library with a custom sort function.
+    3. Narrative Summaries -> Goal: Inform -> Presentation: Styled Text Blocks (HTML/CSS) -> Interaction: Content is dynamically displayed based on the active view ('Matchups' or 'Headlines'). Justification: Separating the narratives into their relevant sections (game-specific vs. league-wide) makes them more contextual and easier to digest. Method: Vanilla JS for content switching. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D352E;
+        }
+        .nav-active {
+            background-color: #D6CDBF;
+            color: #3D352E;
+        }
+        .nav-inactive {
+            background-color: transparent;
+            color: #6B5F51;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px;
+            max-height: 80vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+         @media (max-width: 640px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .details-section {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .details-section.open {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="app" class="container mx-auto p-4 sm:p-6 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#3D352E]">Finders Keepers League</h1>
+            <p class="text-lg text-[#6B5F51] mt-2">Season 3 - Monday Edition: September 8, 2025</p>
+            <p class="text-md italic text-[#8A7A68]">"Where stats meet smack talk"</p>
+        </header>
+
+        <nav class="flex justify-center items-center mb-8 p-1 bg-[#EFEAE4] rounded-full max-w-sm mx-auto">
+            <button data-view="matchups" class="view-toggle nav-active w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Recaps</button>
+            <button data-view="analysis" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Analysis</button>
+            <button data-view="headlines" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Headlines</button>
+        </nav>
+
+        <main id="content-views">
+            
+            <section id="matchups-view" class="view">
+                <div class="text-center mb-8 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-2">Weekly Matchup Recaps</h2>
+                    <p class="text-[#6B5F51]">An overview of this week's showdowns. Click on any matchup card to see the top performing players and key stats that made the difference.</p>
+                </div>
+                <div id="matchups-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+            
+            <section id="analysis-view" class="view hidden">
+                 <div class="text-center mb-8 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-2">League Performance Analysis</h2>
+                    <p class="text-[#6B5F51]">Here's how the teams stacked up against each other this week. This chart visualizes the total points scored by each team, providing a clear snapshot of the league's offensive powerhouses and those who might need to rethink their strategy.</p>
+                </div>
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Points For - Week 1</h3>
+                        <button id="sort-chart-btn" class="bg-[#D6CDBF] hover:bg-[#C8BBAA] text-[#3D352E] font-semibold py-2 px-4 rounded-full transition-colors duration-200">Sort High to Low</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scoresChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="headlines-view" class="view hidden">
+                <div class="text-center mb-8 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-2">This Week's Top Stories</h2>
+                    <p class="text-[#6B5F51]">Beyond the scores, these were the defining moments and narratives of the week. From stunning comebacks to unexpected blowouts, here are the headlines that shaped the fantasy landscape.</p>
+                </div>
+                <div id="headlines-container" class="space-y-6 max-w-3xl mx-auto">
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const weeklyData = {
+                matchups: [
+                    {
+                        team1: { name: "Ekeler? I Barely Know Her!", score: 170.22, topPerformers: [{ name: "Baker Mayfield", points: 31.42 }, { name: "J. Williams", points: "N/A" }, { name: "C. Hubbard", points: "N/A" }] },
+                        team2: { name: "Avast Me Jeanty, Yoho!", score: 137.08, topPerformers: [{ name: "J. Daniels", points: "N/A" }, { name: "K. Williams", points: "N/A" }, { name: "A. Jeanty", points: "N/A" }] },
+                        title: "Upset Alert!",
+                        summary: "Ekeler? I Barely Know Her! sails past Avast Me Jeanty, Yoho! in a surprise victory. Baker Mayfield led the charge with a fiery 31.42 points, while J. Williams and C. Hubbard added fuel to the fire. Avast Me Jeanty's trio couldn't keep pace."
+                    },
+                    {
+                        team1: { name: "Basically Just Bills", score: 185.94, topPerformers: [{ name: "Josh Allen", points: 52.84 }, { name: "Z. Flowers", points: "N/A" }, { name: "D. Henry", points: "N/A" }] },
+                        team2: { name: "FlyEaglesFly", score: 156.72, topPerformers: [{ name: "J. Hurts", points: "N/A" }, { name: "Jax D/ST", points: "N/A" }] },
+                        title: "Josh Allen's Heroics Steal the Show!",
+                        summary: "In a jaw-dropping comeback, Josh Allen posted a monstrous 52.84 points, rallying the Bills past the Ravens after Derrick Henry's costly fumble. Z. Flowers and D. Henry backed the effort, while FlyEaglesFly's J. Hurts and Jax D/ST put up a valiant fight."
+                    },
+                    {
+                        team1: { name: "Yearning for Irving", score: 167.18, topPerformers: [{ name: "Denver D/ST", points: 36.00 }, { name: "P. Mahomes", points: "N/A" }, { name: "Breece Hall", points: 26.00 }] },
+                        team2: { name: "Love Me Tender", score: 118.88, topPerformers: [] },
+                        title: "Mahomes Magic & Denver Defense Dominate",
+                        summary: "Yearning for Irving flexed with a 36-point performance from Denver's D/ST and a classic Mahomes outing. Breece Hall added 26.0 points to help seal a convincing win over Love Me Tender."
+                    },
+                    {
+                        team1: { name: "Bed, Bath and Bijan", score: 156.68, topPerformers: [{ name: "Bijan Robinson", points: 33.40 }, { name: "Puka Nacua", points: "N/A" }, { name: "Alvin Kamara", points: "N/A" }] },
+                        team2: { name: "Wet and Reckless", score: 90.18, topPerformers: [{ name: "J. Warren", points: "N/A" }, { name: "K. Murray", points: "N/A" }] },
+                        title: "Bijan Blitzes the Scoreboard",
+                        summary: "Bijan Robinson exploded for 33.4 points, leading Bed, Bath and Bijan to a comfortable win. Puka Nacua and Alvin Kamara added depth. Wet and Reckless struggled despite solid efforts from J. Warren and K. Murray."
+                    },
+                    {
+                        team1: { name: "Queen Carla", score: 90.46, topPerformers: [{ name: "Christian McCaffrey", points: 34.20 }, { name: "T. Kelce", points: "N/A" }, { name: "C. Olave", points: "N/A" }] },
+                        team2: { name: "Dathomir Raging Rancors", score: 75.70, topPerformers: [] },
+                        title: "McCaffrey Crowns Queen Carla in Massive Upset",
+                        summary: "Christian McCaffrey's 34.2-point performance stunned the Rancors, propelling Queen Carla to a shocking win. T. Kelce and C. Olave chipped in, while Dathomir's stars failed to ignite."
+                    },
+                    {
+                        team1: { name: "Saquon in 60 Seconds", score: 147.14, topPerformers: [{ name: "Lamar Jackson", points: "30+" }, { name: "Saquon Barkley", points: "30+" }] },
+                        team2: { name: "Taylor", score: 122.48, topPerformers: [{ name: "J. Herbert", points: 36.38 }] },
+                        title: "Battle of the Backs",
+                        summary: "Lamar Jackson and Saquon Barkley combined for over 60 points, lifting Saquon in 60 Seconds past Taylor. J. Herbert's 36.38 wasn't enough to close the gap."
+                    }
+                ],
+                headlines: [
+                    { title: "Josh Allen Leads Comeback of the Year", summary: "After Derrick Henry's late-game fumble, Allen went nuclear, torching the Ravens defense and fantasy scoreboards alike. Owners who stuck with him are grinning ear to ear." },
+                    { title: "Steelers vs. Jets: Shootout of the Week", summary: "A high-octane clash saw both teams put up impressive fantasy numbers across the board, making it a dream matchup for owners with players in the game." }
+                ]
+            };
+
+            const matchupsGrid = document.getElementById('matchups-grid');
+            const headlinesContainer = document.getElementById('headlines-container');
+            const viewToggles = document.querySelectorAll('.view-toggle');
+            const views = document.querySelectorAll('.view');
+            
+            function createMatchupCard(matchup) {
+                const winner = matchup.team1.score > matchup.team2.score ? matchup.team1 : matchup.team2;
+                const loser = matchup.team1.score < matchup.team2.score ? matchup.team1 : matchup.team2;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200 cursor-pointer transition-all duration-300 hover:shadow-md';
+                
+                const allPerformers = [...winner.topPerformers, ...loser.topPerformers];
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-lg font-bold text-[#3D352E] pr-2">${matchup.title}</h3>
+                        <span class="text-xs font-semibold text-[#8A7A68] bg-[#EFEAE4] px-2 py-1 rounded-full whitespace-nowrap">${Math.abs(winner.score - loser.score).toFixed(2)} pt diff</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-green-50 border border-green-200">
+                            <span class="font-semibold text-green-800">${winner.name}</span>
+                            <span class="font-bold text-lg text-green-800">${winner.score.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 rounded-lg bg-red-50 border border-red-200">
+                            <span class="font-semibold text-red-800">${loser.name}</span>
+                            <span class="font-bold text-lg text-red-800">${loser.score.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-[#6B5F51] mt-4">${matchup.summary}</p>
+                    <div class="details-section mt-4 pt-4 border-t border-gray-200">
+                        <h4 class="font-semibold mb-2">Top Performers</h4>
+                        <ul class="text-sm space-y-1">
+                            ${allPerformers.map(p => `<li class="flex justify-between"><span>${p.name}</span><span class="font-medium">${p.points}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    card.querySelector('.details-section').classList.toggle('open');
+                });
+                return card;
+            }
+
+            function createHeadlineCard(headline) {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-2xl shadow-sm border border-gray-200';
+                card.innerHTML = `
+                    <h3 class="text-xl font-bold text-[#3D352E] mb-2">${headline.title}</h3>
+                    <p class="text-[#6B5F51]">${headline.summary}</p>
+                `;
+                return card;
+            }
+
+            weeklyData.matchups.forEach(matchup => {
+                matchupsGrid.appendChild(createMatchupCard(matchup));
+            });
+            
+            weeklyData.headlines.forEach(headline => {
+                headlinesContainer.appendChild(createHeadlineCard(headline));
+            });
+
+            viewToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const viewName = toggle.dataset.view;
+                    
+                    views.forEach(view => {
+                        view.classList.toggle('hidden', view.id !== `${viewName}-view`);
+                    });
+
+                    viewToggles.forEach(t => {
+                        t.classList.toggle('nav-active', t.dataset.view === viewName);
+                        t.classList.toggle('nav-inactive', t.dataset.view !== viewName);
+                    });
+                });
+            });
+            
+            let chartInstance = null;
+            let isChartSorted = false;
+
+            function renderChart(sorted = false) {
+                const teamsData = weeklyData.matchups.flatMap(m => [m.team1, m.team2]);
+                if (sorted) {
+                    teamsData.sort((a, b) => b.score - a.score);
+                }
+
+                const ctx = document.getElementById('scoresChart').getContext('2d');
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: teamsData.map(t => t.name),
+                        datasets: [{
+                            label: 'Points Scored',
+                            data: teamsData.map(t => t.score),
+                            backgroundColor: '#D6CDBF',
+                            borderColor: '#C8BBAA',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ` Score: ${context.raw.toFixed(2)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#EFEAE4'
+                                },
+                                ticks: {
+                                    color: '#6B5F51'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#3D352E',
+                                    font: {
+                                        weight: '600'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            document.getElementById('sort-chart-btn').addEventListener('click', () => {
+                isChartSorted = !isChartSorted;
+                renderChart(isChartSorted);
+                document.getElementById('sort-chart-btn').textContent = isChartSorted ? 'Unsort' : 'Sort High to Low';
+            });
+            
+            const analysisToggle = document.querySelector('button[data-view="analysis"]');
+            analysisToggle.addEventListener('click', () => {
+                 if (!chartInstance) {
+                    renderChart(isChartSorted);
+                 }
+            }, { once: true });
+
+        });
+    </script>
+</body>
+</html>
