@@ -13,15 +13,15 @@
             background-color: #FDFBF8;
             color: #3D352E;
         }
-       .nav-active {
+        .nav-active {
             background-color: #D6CDBF;
             color: #3D352E;
         }
-       .nav-inactive {
+        .nav-inactive {
             background-color: transparent;
             color: #6B5F51;
         }
-       .chart-container {
+        .chart-container {
             position: relative;
             width: 100%;
             max-width: 900px;
@@ -39,14 +39,6 @@
            .chart-container {
                 height: 350px;
             }
-        }
-       .details-section {
-            transition: max-height 0.5s ease-in-out;
-            max-height: 0;
-            overflow: hidden;
-        }
-       .details-section.open {
-            max-height: 500px; /* Adjust as needed */
         }
     </style>
 </head>
@@ -70,7 +62,7 @@
         <section id="matchups-view" class="view">
             <div class="text-center mb-8 max-w-2xl mx-auto">
                 <h2 class="text-3xl font-bold mb-2">Weekly Matchup Recaps</h2>
-                <p class="text-[#6B5F51]">An overview of this week's showdowns. Click on any matchup card to see the top performing players and key stats that made the difference.</p>
+                <p class="text-[#6B5F51]">An overview of this week's showdowns, featuring key stats and summaries that made the difference.</p>
             </div>
             <div id="matchups-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
@@ -83,7 +75,7 @@
             </div>
             <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold">Points For - Week 2</h3>
+                    <h3 class="text-xl font-bold">Points For - Week 3</h3>
                     <button id="sort-chart-btn" class="bg-[#EFEAE4] hover:bg-[#D6CDBF] text-[#3D352E] font-semibold py-2 px-4 rounded-full transition-colors duration-200">Sort High to Low</button>
                 </div>
                 <div class="chart-container">
@@ -110,38 +102,38 @@
         const weeklyData = {
             matchups: [
                 {
-                    team1: { name: "Avast Me Jeanty, Yoho!", score: 161.6, topPerformers: [{ name: "Ja'Marr Chase", points: "35.2" }] },
-                    team2: { name: "Bed, Bath and Bijan", score: 156.36, topPerformers: [{ name: "Bijan Robinson", points: "28.1" }] },
+                    team1: { name: "Avast Me Jeanty, Yoho!", score: 161.6 },
+                    team2: { name: "Bed, Bath and Bijan", score: 156.36 },
                     title: "Chase is on the case!",
                     summary: "Franchise hopes put on hold as Standout QB Joe Burrow goes down early in the second behind an atrocious o-line. He’s out for three months – but it didn’t matter for Jamar Chase to lead Avast Me Jeanty, Yoho! to a down to the wire victory over Bed, Bath and Bijan."
                 },
                 {
-                    team1: { name: "FlyEaglesFly", score: 144.46, topPerformers: [{ name: "Malik Nabers", points: "31.5" }, { name: "Russell Wilson", points: "25.7" }] },
-                    team2: { name: "Yearning for Irving", score: 128.02, topPerformers: [{ name: "Rachaad White", points: "15.3" }] },
+                    team1: { name: "FlyEaglesFly", score: 144.46 },
+                    team2: { name: "Yearning for Irving", score: 128.02 },
                     title: "Mr Rogers would love to have this guy as a Naber!",
                     summary: "Giants and Cowboys go down to OT and Russell Wilson throws 2 moonballs right in the bucket for Malik Nabers to lead FlyEaglesFly into a decisive victory over Yearning for Irving. Hope springs eternal for Irving’s team who had a TD vultured by Rachaad White."
                 },
                 {
-                    team1: { name: "Basically Just Bills", score: 155.08, topPerformers: [{ name: "James Cook", points: "33.8" }] },
-                    team2: { name: "Wet and Reckless", score: 123.9, topPerformers: [{ name: "Garrett Wilson", points: "14.2" }] },
+                    team1: { name: "Basically Just Bills", score: 155.08 },
+                    team2: { name: "Wet and Reckless", score: 123.9 },
                     title: "Let him cook!",
                     summary: "The Bills look as high powered as ever as they dominate the Jets. The Jets look like the Jets, and couldn’t stop James Cook from earning his first Michelin star as RB of the week! Wet and Reckless’ rookies can’t seem to get it together, and a costly fumble drives Hamptons stocks down."
                 },
                 {
-                    team1: { name: "Dathomir Raging Rancors", score: 219.04, topPerformers: [{ name: "Amon-Ra St. Brown", points: "45.1" }, { name: "Jared Goff", points: "30.5" }] },
-                    team2: { name: "Love Me Tender", score: 141.72, topPerformers: [{ name: "Rome Odunze", points: "29.8" }] },
+                    team1: { name: "Dathomir Raging Rancors", score: 219.04 },
+                    team2: { name: "Love Me Tender", score: 141.72 },
                     title: "GAME OF THE WEEK!",
                     summary: "Dathomir's stack of Jared Goff and Sun God St. Brown decimates Love me Tender as the Bears go down whimpering in a Goffian Masterclass."
                 },
                 {
-                    team1: { name: "Queen Carla", score: 144.76, topPerformers: [{ name: "Christian McCaffrey", points: "38.2" }] },
-                    team2: { name: "Taylor", score: 142.52, topPerformers: [{ name: "Justin Herbert", points: "28.9" }] },
+                    team1: { name: "Queen Carla", score: 144.76 },
+                    team2: { name: "Taylor", score: 142.52 },
                     title: "The San Francisco McCaffreys do it again!",
                     summary: "All McCaffrey, all day lead the 49ers to a victory of the surprisingly scrappy Saints and – despite a strong showing from Justin Herbert on a late Monday Nighter– couldn’t quite get Taylor over the hump to uncrown the Queen. A nailbiter on a Monday!"
                 },
                 {
-                    team1: { name: "Ekeler? I barely know her!", score: 197.2, topPerformers: [{ name: "Javonte Williams", points: "39.6" }] },
-                    team2: { name: "Saquon in 60 Seconds", score: 154.6, topPerformers: [{ name: "Saquon Barkley", points: "22.3" }] },
+                    team1: { name: "Ekeler? I barely know her!", score: 197.2 },
+                    team2: { name: "Saquon in 60 Seconds", score: 154.6 },
                     title: "Javonte Win-iams back at it again!",
                     summary: "Javonte Williams continues to shine for Ekeler? I barely know her! Team of misfit toys, blasting him to a runner up league high of 197.2 in this matchup. Like everyone, Saquon in 60 seconds has to be just sick to death of watching Javonte Williams get more points than Saquon Barkley."
                 }
@@ -172,10 +164,8 @@
             const loser = matchup.team1.score < matchup.team2.score ? matchup.team1 : matchup.team2;
 
             const card = document.createElement('div');
-            card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200 cursor-pointer transition-all duration-300 hover:shadow-md';
+            card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200';
             
-            const allPerformers = [...winner.topPerformers, ...loser.topPerformers];
-
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-3">
                     <h3 class="text-lg font-bold text-[#3D352E] pr-2">${matchup.title}</h3>
@@ -192,16 +182,7 @@
                     </div>
                 </div>
                 <p class="text-sm text-[#6B5F51] mt-4">${matchup.summary}</p>
-                <div class="details-section mt-4 pt-4 border-t border-gray-200">
-                    <h4 class="font-semibold mb-2">Top Performers</h4>
-                    <ul class="text-sm space-y-1 text-[#3D352E]">
-                        ${allPerformers.map(p => `<li class="flex justify-between"><span>${p.name}</span><span class="font-medium">${p.points}</span></li>`).join('')}
-                    </ul>
-                </div>
             `;
-            card.addEventListener('click', () => {
-                card.querySelector('.details-section').classList.toggle('open');
-            });
             return card;
         }
 
@@ -308,7 +289,7 @@
         const analysisToggle = document.querySelector('button[data-view="analysis"]');
         analysisToggle.addEventListener('click', () => {
              if (!chartInstance) {
-                renderChart(isChartSorted);
+                 renderChart(isChartSorted);
              }
         }, { once: true });
 
