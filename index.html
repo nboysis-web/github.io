@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Finders Keepers League - Weekly Recap</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,17 +11,17 @@
         body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #3D352E; }
         .nav-active { background-color: #D6CDBF; color: #3D352E; }
         .nav-inactive { background-color: transparent; color: #6B5F51; }
-        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; height: 500px; max-height: 80vh; }
+        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left:auto; margin-right:auto; height: 500px; max-height: 80vh; }
         @media (max-width: 768px) { .chart-container { height: 400px; } }
         @media (max-width: 640px) { .chart-container { height: 350px; } }
     </style>
 </head>
 <body class="antialiased">
 <div id="app" class="container mx-auto p-4 sm:p-6 md:p-8">
-    
+
     <header class="text-center mb-8">
         <h1 class="text-4xl md:text-5xl font-bold text-[#3D352E]">Finders Keepers League</h1>
-        <p class="text-lg text-[#6B5F51] mt-2">Season 3 - Tuesday Edition: September 23, 2025</p>
+        <p class="text-lg text-[#6B5F51] mt-2">Season 3 - Tuesday Edition: October 7, 2025</p>
         <p class="text-md italic text-[#8A7A68]">"Where stats meet smack talk"</p>
     </header>
 
@@ -32,7 +32,6 @@
     </nav>
 
     <main id="content-views">
-        
         <section id="matchups-view" class="view">
             <div class="text-center mb-8 max-w-2xl mx-auto">
                 <h2 class="text-3xl font-bold mb-2">Weekly Matchup Recaps</h2>
@@ -40,15 +39,15 @@
             </div>
             <div id="matchups-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
-        
+
         <section id="analysis-view" class="view hidden">
             <div class="text-center mb-8 max-w-2xl mx-auto">
                 <h2 class="text-3xl font-bold mb-2">League Performance Analysis</h2>
-                <p class="text-[#6B5F51]">Here's how the teams stacked up against each other this week. This chart visualizes the total points scored by each team, providing a clear snapshot of the league's offensive powerhouses and those who might need to rethink their strategy.</p>
+                <p class="text-[#6B5F51]">Here's how the teams stacked up against each other this week. This chart visualizes total points by team.</p>
             </div>
             <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold">Points For - Week 4</h3>
+                    <h3 class="text-xl font-bold">Points For - Week 5</h3>
                     <button id="sort-chart-btn" class="bg-[#EFEAE4] hover:bg-[#D6CDBF] text-[#3D352E] font-semibold py-2 px-4 rounded-full transition-colors duration-200">Sort High to Low</button>
                 </div>
                 <div class="chart-container">
@@ -56,7 +55,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="headlines-view" class="view hidden">
             <div class="text-center mb-8 max-w-2xl mx-auto">
                 <h2 class="text-3xl font-bold mb-2">This Week's Top Stories</h2>
@@ -64,64 +63,66 @@
             </div>
             <div id="headlines-container" class="space-y-6 max-w-3xl mx-auto"></div>
         </section>
-        
     </main>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // === Updated weekly report (Sept 23, 2025) ===
+    // === Weekly report (Oct 7, 2025) — preserved verbatim ===
     const weeklyData = {
         matchups: [
             {
-                team1: { name: "Avast Me Jeanty, Yoho!", score: 133.16 },
-                team2: { name: "Basically Just Bills", score: 167.48 },
-                title: "“Crabcakes and football, that’s what Maryland does!”",
-                summary: "James Cook continues his Michelin star campaign, and Ashton Jeanty continues to disappoint. A strong showing from New England TE Hunter Henry launches Basically Just Bills to victory this week."
+                team1: { name: "Avast Me Jeanty, Yoho!", score: 183.96 },
+                team2: { name: "FlyEaglesFly", score: 144.70 },
+                title: "“Defense wins championships” – Vince Lombardi, probably",
+                summary: `Jamar Chase finds his footing against a shaky Detroit secondary and Ky-win Williams puts in two of his own to blast Avast me Jeanty,Yoho! over the Low soaring (scoring?) FlyEaglesFly. A last second Brock Bowers pull for FlyEaglesFly ended up being a heartbreaker.`
             },
             {
-                team1: { name: "FlyEaglesFly", score: 154.06 },
-                team2: { name: "Wet and Reckless", score: 173.84 },
-                title: "“Alright everybody let’s go… LEEEEROYYY JENKINS QUINNNNSHONNN JUUUDDDKINNNSS!”",
-                summary: "Rookie running backs reign supreme for Wet and Reckless as a season-ending injury ignites a larger timeshare for Omarion Hampton. We thank Najee for his years of very mediocre fantasy service."
+                team1: { name: "Saquon in 60 Seconds", score: 119.78 },
+                team2: { name: "Wet and Reckless", score: 135.90 },
+                title: "“To be the man, you have to beat the man – and he beat the man tonight.” – Mike Tirico, absolutely butchering a Ric Flair quote.",
+                summary: `Saquon in 60 seconds receiving core does him no favors and although Drake Maye played his lights out, his Zero touchdowns causes him to fall to Wet and Reckless. Omarion Hampton goes down and on IR for four games at the end of this matchup. Wet and Reckless slops by Saquon in 60 seconds  in this low scoring affair.`
             },
             {
-                team1: { name: "Yearning for Irving", score: 128.34 },
-                team2: { name: "Dathomir Raging Rancors", score: 193.52 },
-                title: "“I’M THE SCATMAN!” – Scatman John",
-                summary: "Jonathan Taylor remains the league’s leading TD scorer, notching another 3 against a porous Tennessee defense. David Montgomery posted 151 and 2 against a usually strong Ravens run D, but it wasn’t enough with Cam Skattebo looking good. Even Adam Thielen’s goose couldn’t keep Dathomir’s Raging Rancors out of the winner’s circle."
+                team1: { name: "Yearning for Irving", score: 148.36 },
+                team2: { name: "Ekeler? I barely know her!", score: 174.24 },
+                title: "“Either men will learn to live like brothers, or they will die like beasts”  - Max Lerner",
+                summary: `*SPECIAL BROTHER ON BROTHER MATCHUP*\n\nFor some reason, Yearning for Irving last second drops Rico Dowdle to pick up Sean Tucker of all people, causing him to drop in this Schaffland VS Schaffland grudge match. The Emeka “Ebukako” (as Rob Gronkowski would say) Rookie of the Year campaign continues and his connection with Baker Mayfield is special. Abel beats Cain in this one, with Ekeler? I barely know her! Coming out on top.`
             },
             {
-                team1: { name: "Love Me Tender", score: 138.08 },
-                team2: { name: "Taylor", score: 79.70 },
-                title: "“I’m lyin’ in bed, just like Brian Garrett Wilson did” – Barenaked Ladies",
-                summary: "Jordan Mason takes over the backfield in Minnesota and Garrett Wilson helps propel Love Me Tender over an injury-decimated Taylor. James Conner suffered a brutal lower-leg injury."
+                team1: { name: "Dathomir Raging Rancors", score: 191.48 },
+                team2: { name: "Taylor", score: 103.46 },
+                title: "“Doctors say I’m the illest, cause I’m sufferin from realness, got my Njigbas in Paris , and they goin gorillas!” -Kanye",
+                summary: `Summer turns into fall, and Jonathan Taylor falls in the endzone 3 more times (he is the leagues leading rusher by a country mile) to once again help propel Dathormir Raging Rancors into an absolute feasting on Taylor. The beatings will continue until moral improves. GOOSE WATCH – Zach Ertz – 0.0.`
             },
             {
-                team1: { name: "Saquon in 60 Seconds", score: 190.48 },
-                team2: { name: "Bed, Bath, Bijan", score: 122.02 },
-                title: "“SKOL” – Isiah Rogers, probably",
-                summary: "A massive defensive performance by Isiah Rogers and the Vikings D, combined with a whimpering CeeDee Lamb goosing due to a high-ankle sprain, pushes Saquon in 60 Seconds past Bed, Bath, Bijan. In fantasy you need your studs to be studs—BTJ and Lamb fell short today."
+                team1: { name: "Queen Carla", score: 133.20 },
+                team2: { name: "Basically Just Bills", score: 154.38 },
+                title: "“Somebody give me a f**kin hand here for Christ sakes” Christian Mcaffrey, you have to imagine.",
+                summary: `Mcaffrey remains the only person on the team in San Francisco (but it was enough to get them the win !), but even he couldn’t help lead our Queen to victory over Basically Just Bills. A rare Waddle touchdown helps to launch BJB to victory.`
             },
             {
-                team1: { name: "Ekeler? I barely know her!", score: 158.38 },
-                team2: { name: "Queen Carla", score: 162.08 },
-                title: "GAME OF THE WEEK!",
-                summary: "McCaffrey remains constant, and Davante Adams and A.J. Brown remember they’re elite WRs to launch THE QUEEN to 3-0! An absolute dark horse to begin the season—she’s racking up the wins!"
+                team1: { name: "Bed Bath and Bijan", score: 187.64 },
+                team2: { name: "Love me Tender", score: 167.56 },
+                title: "“You wanna watch me throw a football over them mountains?” -  Uncle Rico",
+                summary: `Rico Dowdle, waiver wire pickup of the week, explodes onto the scene in Carolina and helps Bed Bath and Bijan into a victory over Love me Tender. Tender was let down by Jordan Mason, and Justice Hill with bye weeks claiming her best RB. Look for her to bounce back next week!`
             }
         ],
         headlines: [
             {
-                title: "A PERFECT GAME?",
-                summary: "Isiah Rogers posted the highest PFF grade for a defender ever (99.6): 2 fumbles returned for TDs, a third fumble caused and recovered, 3 batted passes, and a partridge in a pear tree. What an outing for the young superstar corner."
+                title: "PIRATES VS SEABIRDS, A MATCH FOR THE AGES",
+                summary: `Baker Mayfield and Sam Darnold go head to head in a high scoring affair, that the Bucs end up taking 38-35. It is absolutely hilarious that the Browns drafted Baker first overall, he took them to the playoffs for the first time in 20 years, then they got rid of him as he wasn’t “mature enough”. Quick check on how that worked out for them? Still bottom 5?`
             },
             {
-                title: "Season Enders",
-                summary: "Bless the achilles, MCLs, knees, and ankles of our starters—fallen brothers James Conner and Najee Harris included. Thank you for your sacrifices; you’ll be remembered (mostly) fondly."
+                title: "Injuries, Bye weeks, Unsung Heroes – oh my!",
+                summary: `Reminder that depth on a bench matters when you’re looking at injuries and upcoming bye weeks. Bye weeks for the Week Six NFL season – Houston, Vikings.`
             },
             {
-                title: "Big Cats Eat Birds, And It Wasn’t Close",
-                summary: "The Panthers shocked Atlanta, goose-egging the Falcons. Michael Penix Jr. was pulled in the fourth for Kirk Cousins. Wild stat: Atlanta never crossed the 30-yard line—an unreal day from a defense many ranked last. Is Carolina for real?"
+                title: "Jason Moore heart attack watch – Cards fall to Titans.",
+                summary: `The Arizona Cardinals lost to the Tennessee Titans in what was perhaps the best example of incompetence I have ever seen. Quick Review - <br><br>
+                Demarcado doesn’t hold the ball while he walks in for a touchdown and fumbles it for a touchback. <br><br>
+                The Titans march down the field, but the Cards pick him off! BUT WAIT – the Cards fumble, into their own endzone, and the Titans jump on it for a TD! <br><br>
+                The Titans end up playing a great clock management game, Kyler Murray gets in the face with a snap and goes to the locker room, one 30 yard chip shot and that’s all she wrote. An actual 3 stooges of Gannon, Kyler, and Demarcado. What an embarrassment.`
             }
         ]
     };
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createMatchupCard(matchup) {
         const winner = matchup.team1.score > matchup.team2.score ? matchup.team1 : matchup.team2;
-        const loser = matchup.team1.score < matchup.team2.score ? matchup.team1 : matchup.team2;
+        const loser  = matchup.team1.score < matchup.team2.score ? matchup.team1 : matchup.team2;
 
         const card = document.createElement('div');
         card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200';
@@ -152,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="font-bold text-lg text-red-800">${loser.score.toFixed(2)}</span>
                 </div>
             </div>
-            <p class="text-sm text-[#6B5F51] mt-4">${matchup.summary}</p>
+            <p class="text-sm text-[#6B5F51] mt-4 whitespace-pre-line">${matchup.summary}</p>
         `;
         return card;
     }
@@ -162,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         card.className = 'bg-white p-6 rounded-2xl shadow-sm border border-gray-200';
         card.innerHTML = `
             <h3 class="text-xl font-bold text-[#3D352E] mb-2">${headline.title}</h3>
-            <p class="text-[#6B5F51]">${headline.summary}</p>
+            <p class="text-[#6B5F51] whitespace-pre-line">${headline.summary}</p>
         `;
         return card;
     }
@@ -210,11 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => ` Score: ${ctx.raw.toFixed(2)}`
-                        }
-                    }
+                    tooltip: { callbacks: { label: (ctx) => ` Score: ${ctx.raw.toFixed(2)}` } }
                 },
                 scales: {
                     x: { beginAtZero: true, grid: { color: '#EFEAE4' }, ticks: { color: '#6B5F51' } },
@@ -238,5 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
+
+
 
 
