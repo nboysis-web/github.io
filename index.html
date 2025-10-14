@@ -1,241 +1,299 @@
+Updated to Oct 14, 2025—kept every word, typo, and cutoff exactly as in your doc. I also made the UI tolerant of missing/unknown scores (it shows “—” and hides the diff badge, and the chart excludes those entries). If you want me to standardize names later (e.g., “Dathormir” vs “Dathomir”), say so. 
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Finders Keepers League - Weekly Recap</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #3D352E; }
-        .nav-active { background-color: #D6CDBF; color: #3D352E; }
-        .nav-inactive { background-color: transparent; color: #6B5F51; }
-        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left:auto; margin-right:auto; height: 500px; max-height: 80vh; }
-        @media (max-width: 768px) { .chart-container { height: 400px; } }
-        @media (max-width: 640px) { .chart-container { height: 350px; } }
-    </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finders Keepers League - Weekly Recap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #FDFBF8; color: #3D352E; }
+    .nav-active { background-color: #D6CDBF; color: #3D352E; }
+    .nav-inactive { background-color: transparent; color: #6B5F51; }
+    .chart-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; height: 500px; max-height: 80vh; }
+    @media (max-width: 768px){ .chart-container{ height: 400px; } }
+    @media (max-width: 640px){ .chart-container{ height: 350px; } }
+  </style>
 </head>
 <body class="antialiased">
 <div id="app" class="container mx-auto p-4 sm:p-6 md:p-8">
+  <header class="text-center mb-8">
+    <h1 class="text-4xl md:text-5xl font-bold text-[#3D352E]">Finders Keepers League</h1>
+    <p class="text-lg text-[#6B5F51] mt-2">Season 3 - Tuesday Edition: October 14, 2025</p>
+    <p class="text-md italic text-[#8A7A68]">"Where stats meet smack talk"</p>
+  </header>
 
-    <header class="text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold text-[#3D352E]">Finders Keepers League</h1>
-        <p class="text-lg text-[#6B5F51] mt-2">Season 3 - Tuesday Edition: October 7, 2025</p>
-        <p class="text-md italic text-[#8A7A68]">"Where stats meet smack talk"</p>
-    </header>
+  <nav class="flex justify-center items-center mb-8 p-1 bg-[#EFEAE4] rounded-full max-w-sm mx-auto">
+    <button data-view="matchups" class="view-toggle nav-active w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Recaps</button>
+    <button data-view="analysis" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Analysis</button>
+    <button data-view="headlines" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Headlines</button>
+  </nav>
 
-    <nav class="flex justify-center items-center mb-8 p-1 bg-[#EFEAE4] rounded-full max-w-sm mx-auto">
-        <button data-view="matchups" class="view-toggle nav-active w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Recaps</button>
-        <button data-view="analysis" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Analysis</button>
-        <button data-view="headlines" class="view-toggle nav-inactive w-1/3 text-center py-2 px-4 rounded-full font-semibold transition-colors duration-300">Headlines</button>
-    </nav>
+  <main id="content-views">
+    <section id="matchups-view" class="view">
+      <div class="text-center mb-8 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold mb-2">Weekly Matchup Recaps</h2>
+        <p class="text-[#6B5F51]">An overview of this week's showdowns, featuring key stats and summaries that made the difference.</p>
+      </div>
+      <div id="matchups-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
 
-    <main id="content-views">
-        <section id="matchups-view" class="view">
-            <div class="text-center mb-8 max-w-2xl mx-auto">
-                <h2 class="text-3xl font-bold mb-2">Weekly Matchup Recaps</h2>
-                <p class="text-[#6B5F51]">An overview of this week's showdowns, featuring key stats and summaries that made the difference.</p>
-            </div>
-            <div id="matchups-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
+    <section id="analysis-view" class="view hidden">
+      <div class="text-center mb-8 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold mb-2">League Performance Analysis</h2>
+        <p class="text-[#6B5F51]">Here's how the teams stacked up against each other this week. This chart visualizes total points by team.</p>
+      </div>
+      <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold">Points For - Week 6</h3>
+          <button id="sort-chart-btn" class="bg-[#EFEAE4] hover:bg-[#D6CDBF] text-[#3D352E] font-semibold py-2 px-4 rounded-full transition-colors duration-200">Sort High to Low</button>
+        </div>
+        <div class="chart-container">
+          <canvas id="scoresChart"></canvas>
+        </div>
+      </div>
+    </section>
 
-        <section id="analysis-view" class="view hidden">
-            <div class="text-center mb-8 max-w-2xl mx-auto">
-                <h2 class="text-3xl font-bold mb-2">League Performance Analysis</h2>
-                <p class="text-[#6B5F51]">Here's how the teams stacked up against each other this week. This chart visualizes total points by team.</p>
-            </div>
-            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold">Points For - Week 5</h3>
-                    <button id="sort-chart-btn" class="bg-[#EFEAE4] hover:bg-[#D6CDBF] text-[#3D352E] font-semibold py-2 px-4 rounded-full transition-colors duration-200">Sort High to Low</button>
-                </div>
-                <div class="chart-container">
-                    <canvas id="scoresChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section id="headlines-view" class="view hidden">
-            <div class="text-center mb-8 max-w-2xl mx-auto">
-                <h2 class="text-3xl font-bold mb-2">This Week's Top Stories</h2>
-                <p class="text-[#6B5F51]">Beyond the scores, these were the defining moments and narratives of the week.</p>
-            </div>
-            <div id="headlines-container" class="space-y-6 max-w-3xl mx-auto"></div>
-        </section>
-    </main>
+    <section id="headlines-view" class="view hidden">
+      <div class="text-center mb-8 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold mb-2">This Week's Top Stories</h2>
+        <p class="text-[#6B5F51]">Beyond the scores, these were the defining moments and narratives of the week.</p>
+      </div>
+      <div id="headlines-container" class="space-y-6 max-w-3xl mx-auto"></div>
+    </section>
+  </main>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // === Weekly report (Oct 7, 2025) — preserved verbatim ===
-    const weeklyData = {
-        matchups: [
-            {
-                team1: { name: "Avast Me Jeanty, Yoho!", score: 183.96 },
-                team2: { name: "FlyEaglesFly", score: 144.70 },
-                title: "“Defense wins championships” – Vince Lombardi, probably",
-                summary: `Jamar Chase finds his footing against a shaky Detroit secondary and Ky-win Williams puts in two of his own to blast Avast me Jeanty,Yoho! over the Low soaring (scoring?) FlyEaglesFly. A last second Brock Bowers pull for FlyEaglesFly ended up being a heartbreaker.`
-            },
-            {
-                team1: { name: "Saquon in 60 Seconds", score: 119.78 },
-                team2: { name: "Wet and Reckless", score: 135.90 },
-                title: "“To be the man, you have to beat the man – and he beat the man tonight.” – Mike Tirico, absolutely butchering a Ric Flair quote.",
-                summary: `Saquon in 60 seconds receiving core does him no favors and although Drake Maye played his lights out, his Zero touchdowns causes him to fall to Wet and Reckless. Omarion Hampton goes down and on IR for four games at the end of this matchup. Wet and Reckless slops by Saquon in 60 seconds  in this low scoring affair.`
-            },
-            {
-                team1: { name: "Yearning for Irving", score: 148.36 },
-                team2: { name: "Ekeler? I barely know her!", score: 174.24 },
-                title: "“Either men will learn to live like brothers, or they will die like beasts”  - Max Lerner",
-                summary: `*SPECIAL BROTHER ON BROTHER MATCHUP*\n\nFor some reason, Yearning for Irving last second drops Rico Dowdle to pick up Sean Tucker of all people, causing him to drop in this Schaffland VS Schaffland grudge match. The Emeka “Ebukako” (as Rob Gronkowski would say) Rookie of the Year campaign continues and his connection with Baker Mayfield is special. Abel beats Cain in this one, with Ekeler? I barely know her! Coming out on top.`
-            },
-            {
-                team1: { name: "Dathomir Raging Rancors", score: 191.48 },
-                team2: { name: "Taylor", score: 103.46 },
-                title: "“Doctors say I’m the illest, cause I’m sufferin from realness, got my Njigbas in Paris , and they goin gorillas!” -Kanye",
-                summary: `Summer turns into fall, and Jonathan Taylor falls in the endzone 3 more times (he is the leagues leading rusher by a country mile) to once again help propel Dathormir Raging Rancors into an absolute feasting on Taylor. The beatings will continue until moral improves. GOOSE WATCH – Zach Ertz – 0.0.`
-            },
-            {
-                team1: { name: "Queen Carla", score: 133.20 },
-                team2: { name: "Basically Just Bills", score: 154.38 },
-                title: "“Somebody give me a f**kin hand here for Christ sakes” Christian Mcaffrey, you have to imagine.",
-                summary: `Mcaffrey remains the only person on the team in San Francisco (but it was enough to get them the win !), but even he couldn’t help lead our Queen to victory over Basically Just Bills. A rare Waddle touchdown helps to launch BJB to victory.`
-            },
-            {
-                team1: { name: "Bed Bath and Bijan", score: 187.64 },
-                team2: { name: "Love me Tender", score: 167.56 },
-                title: "“You wanna watch me throw a football over them mountains?” -  Uncle Rico",
-                summary: `Rico Dowdle, waiver wire pickup of the week, explodes onto the scene in Carolina and helps Bed Bath and Bijan into a victory over Love me Tender. Tender was let down by Jordan Mason, and Justice Hill with bye weeks claiming her best RB. Look for her to bounce back next week!`
-            }
-        ],
-        headlines: [
-            {
-                title: "PIRATES VS SEABIRDS, A MATCH FOR THE AGES",
-                summary: `Baker Mayfield and Sam Darnold go head to head in a high scoring affair, that the Bucs end up taking 38-35. It is absolutely hilarious that the Browns drafted Baker first overall, he took them to the playoffs for the first time in 20 years, then they got rid of him as he wasn’t “mature enough”. Quick check on how that worked out for them? Still bottom 5?`
-            },
-            {
-                title: "Injuries, Bye weeks, Unsung Heroes – oh my!",
-                summary: `Reminder that depth on a bench matters when you’re looking at injuries and upcoming bye weeks. Bye weeks for the Week Six NFL season – Houston, Vikings.`
-            },
-            {
-                title: "Jason Moore heart attack watch – Cards fall to Titans.",
-                summary: `The Arizona Cardinals lost to the Tennessee Titans in what was perhaps the best example of incompetence I have ever seen. Quick Review - <br><br>
-                Demarcado doesn’t hold the ball while he walks in for a touchdown and fumbles it for a touchback. <br><br>
-                The Titans march down the field, but the Cards pick him off! BUT WAIT – the Cards fumble, into their own endzone, and the Titans jump on it for a TD! <br><br>
-                The Titans end up playing a great clock management game, Kyler Murray gets in the face with a snap and goes to the locker room, one 30 yard chip shot and that’s all she wrote. An actual 3 stooges of Gannon, Kyler, and Demarcado. What an embarrassment.`
-            }
-        ]
-    };
+  // === Weekly report (Oct 14, 2025) — preserved verbatim ===
+  const weeklyData = {
+    matchups: [
+      {
+        team1: { name: "Avast Me Jeanty, Yoho!", score: 148.96 },
+        team2: { name: "Saquon in 60 Seconds", score: 143.97 },
+        title: "RECAP: Avast Me Jeanty, Yoho! (148.96 vs. Saquon in 60 Seconds (143.97)",
+        summary: `“I need Drake Maye to stop having the best game of his life against me” – Me, halfway through Sunday
 
-    const matchupsGrid = document.getElementById('matchups-grid');
-    const headlinesContainer = document.getElementById('headlines-container');
-    const viewToggles = document.querySelectorAll('.view-toggle');
-    const views = document.querySelectorAll('.view');
+Despite Jayden Daniels doing everything he could to lose this match, and Drake Maye doing everything he could do to win - Avast Me Jeanty, Yoho! pulls off the narrowest victory of the week. Maye looks like the real deal, and I’m dangerously concerned with some more wide receivers than the ghost of Stefon Diggs, that team gets real competitive, real quick.`
+      },
+      {
+        team1: { name: "Dathormir Raging Rancors", score: 185.28 },
+        team2: { name: "Ekeler? I barely Know her!", score: 136.26 },
+        title: `Dathormir Raging Rancors (185.28) vs Ekeler? I barely Know her! (136.26)`,
+        summary: `“"The Rancor is a truly marvelous opponent. They're not very bright, but they more than make up for that with their ferocious strength."
 
-    function createMatchupCard(matchup) {
-        const winner = matchup.team1.score > matchup.team2.score ? matchup.team1 : matchup.team2;
-        const loser  = matchup.team1.score < matchup.team2.score ? matchup.team1 : matchup.team2;
+―The Trandoshan hunter, Char
 
-        const card = document.createElement('div');
-        card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200';
-        card.innerHTML = `
-            <div class="flex justify-between items-start mb-3">
-                <h3 class="text-lg font-bold text-[#3D352E] pr-2">${matchup.title}</h3>
-                <span class="text-xs font-semibold text-[#8A7A68] bg-[#EFEAE4] px-2 py-1 rounded-full whitespace-nowrap">${Math.abs(winner.score - loser.score).toFixed(2)} pt diff</span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center p-3 rounded-lg bg-green-50 border border-green-200">
-                    <span class="font-semibold text-green-800">${winner.name}</span>
-                    <span class="font-bold text-lg text-green-800">${winner.score.toFixed(2)}</span>
-                </div>
-                <div class="flex justify-between items-center p-3 rounded-lg bg-red-50 border border-red-200">
-                    <span class="font-semibold text-red-800">${loser.name}</span>
-                    <span class="font-bold text-lg text-red-800">${loser.score.toFixed(2)}</span>
-                </div>
-            </div>
-            <p class="text-sm text-[#6B5F51] mt-4 whitespace-pre-line">${matchup.summary}</p>
-        `;
-        return card;
+The rancor rages on in another monster performance. Lack of injuries is helping Dathomir here, (as well as having the RB1, WR 2, WR3, and RB11 on the year). He trounces Ekeler? I hardly knew her! in this matchup. Calvin ridley gets injured after one catch here, and rookie sensation Emeka Egbuka injures a hamstring.`
+      },
+      {
+        team1: { name: "Wet and Reckless", score: 103.44 },
+        team2: { name: "Queen Carla", score: 163.14 },
+        title: `Wet and Reckless(103.44) vs Queen Carla (163.14)`,
+        summary: `“Open fucking always”  - George Pickens writing on his eyeblack. 
+
+Bryce Young and DK Metcalf put up strong performances, but they couldn’t outshine Queen Carla and her royal court of CMC and Pickens.  Its possible Carla knows something none of us do, as I can’t believe she started the giants defense against Philly, but it worked out! Judkins looked like a rookie against a normal run defense and Mason Taylor is suffering from “MyQbisJustinFields”itis. Terrible disease.`
+      },
+      {
+        team1: { name: "FlyEaglesFly", score: 124.48 },
+        team2: { name: "Taylor", score: 141.34 },
+        title: `HEARTBREAKER - 
+FlyEaglesFly (124.48) vs.  Taylor (141.34)`,
+        summary: `“Go Eagles go! E-L-G-S-E-S!” -Philadelphia Mayor Cherelle Parker, trying to spell Eagles after their superbowl win.
+
+Other than Drake London, who exploded all over the stomach of Buffalos atrocious pass defense, FlyEaglesFly couldn’t buy a touchdown in this one. Taylor gets the W on the back of Deandre Swifts monster game.`
+      },
+      {
+        // Scores not present in source; intentionally left null and handled in UI
+        team1: { name: "Bed, Bath and Bijan", score: null },
+        team2: { name: "Yearning for Irving", score: null },
+        title: `SHOWDOWN OF THE WEEK`,
+        summary: `“Words can’t describe how much I hate that I don’t have Dowdle.” Nicolas Hans Schaffland, 2025, immediately after a diabetes induced sugar crash.
+
+This high scoring affair had it all. Betrayal, injuries, and one 81 yard run that changed everything. The broncos 9 sacks on Justin fields was a great start, and Mahomes lighting up the lions looked good – but unfortunately couldn’t keep up to Rico Dowdle and Bijan Robinson, who combined for 90+ points to put Bed, Bath and Bijan over the Yearnings for this one. 
+
+Here’s some fun facts – RBS that have 200+ scrimmage yards in a game this year :
+1) Rico Dowdle -2 
+
+Rest of the NFL combined – 1.`
+      },
+      {
+        team1: { name: "Basically Just Bills", score: 109.98 },
+        team2: { name: "Love me Tender", score: 102.04 },
+        title: `MUD BOWL ALERT
+
+Basically Just Bills (109.98) vs Love me Tender (102.04)`,
+        summary: `“Can someone explain football to me?” -  Blade Theolonius Eresman, 2025 
+
+What a terrible matchup. In our lowest scoring match of the week, Love Me Tenders RB2, WR1, WR2, WR3,TE1, Flex, and Defense combine for 36.8 points. Bye week hell hits Love me Tender hard, and a surprisingly soft showing from the Basically just Bills juggernauts of Josh Allen and James Cook make for a snoozefest- BUT BSB remains undefeated in this one.`
+      }
+    ],
+    headlines: [
+      {
+        title: "🔥 HEADLINES\n\nUPSET WEEK?",
+        summary: `Concern in the Upper North East US as Philadelphia and Buffalo both fail to deliver against soft opponents. Dallas fails to win against Carolina, and the Ravens are in absolute shambles. Lots of upsets this week, but it means the parity of the NFL is at an all time high, which makes for great games! Who’s got it better than us huh? NOBODY!`
+      },
+      {
+        title: "Bye Brian Callahan!",
+        summary: `The first headcoach of the year falls as Brian Callahan throws his rookie Number one pick Cam Ward under the bus. Callahan was unceremoniously let go from the Titans – interim HC is to be the Offensive Coordinator, John Mccoy. Titans OL Coach, Bill Callahan, will also follow his son Brian and leave the organization.`
+      },
+      {
+        title: "Oldest QBs in existence to play on Thursday.",
+        summary: `The Steelers take on the Bengals in an Old man Ayahuasca vs Get off my lawn matchup for the ages. This will be the 3rd time ever that two qbs that are above 40 have faced off. The first AND second times were when Drew Brees and Tom Brady faced off on the Saints and Bucs, weeks 1 and 9 in 2020.`
+      },
+      {
+        title: "BYE WEEKS -",
+        summary: `RAVENS
+BILLS`
+      }
+    ]
+  };
+
+  const matchupsGrid = document.getElementById('matchups-grid');
+  const headlinesContainer = document.getElementById('headlines-container');
+  const viewToggles = document.querySelectorAll('.view-toggle');
+  const views = document.querySelectorAll('.view');
+
+  function isNum(v){ return Number.isFinite(v); }
+
+  function createMatchupCard(m) {
+    const hasScores = isNum(m.team1.score) && isNum(m.team2.score);
+    const winner = hasScores ? (m.team1.score > m.team2.score ? m.team1 : m.team2) : null;
+    const loser  = hasScores ? (m.team1.score < m.team2.score ? m.team1 : m.team2) : null;
+
+    const card = document.createElement('div');
+    card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-200';
+
+    const diffBadge = hasScores
+      ? `<span class="text-xs font-semibold text-[#8A7A68] bg-[#EFEAE4] px-2 py-1 rounded-full whitespace-nowrap">${Math.abs(winner.score - loser.score).toFixed(2)} pt diff</span>`
+      : '';
+
+    const topRow = `
+      <div class="flex justify-between items-start mb-3">
+        <h3 class="text-lg font-bold text-[#3D352E] pr-2 whitespace-pre-line">${m.title}</h3>
+        ${diffBadge}
+      </div>`;
+
+    let scoresHtml = '';
+    if (hasScores) {
+      scoresHtml = `
+        <div class="space-y-3">
+          <div class="flex justify-between items-center p-3 rounded-lg bg-green-50 border border-green-200">
+            <span class="font-semibold text-green-800">${winner.name}</span>
+            <span class="font-bold text-lg text-green-800">${winner.score.toFixed(2)}</span>
+          </div>
+          <div class="flex justify-between items-center p-3 rounded-lg bg-red-50 border border-red-200">
+            <span class="font-semibold text-red-800">${loser.name}</span>
+            <span class="font-bold text-lg text-red-800">${loser.score.toFixed(2)}</span>
+          </div>
+        </div>`;
+    } else {
+      scoresHtml = `
+        <div class="space-y-3">
+          <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 border border-gray-200">
+            <span class="font-semibold text-gray-800">${m.team1.name}</span>
+            <span class="font-bold text-lg text-gray-700">—</span>
+          </div>
+          <div class="flex justify-between items-center p-3 rounded-lg bg-gray-50 border border-gray-200">
+            <span class="font-semibold text-gray-800">${m.team2.name}</span>
+            <span class="font-bold text-lg text-gray-700">—</span>
+          </div>
+        </div>`;
     }
 
-    function createHeadlineCard(headline) {
-        const card = document.createElement('div');
-        card.className = 'bg-white p-6 rounded-2xl shadow-sm border border-gray-200';
-        card.innerHTML = `
-            <h3 class="text-xl font-bold text-[#3D352E] mb-2">${headline.title}</h3>
-            <p class="text-[#6B5F51] whitespace-pre-line">${headline.summary}</p>
-        `;
-        return card;
-    }
+    card.innerHTML = `
+      ${topRow}
+      ${scoresHtml}
+      <p class="text-sm text-[#6B5F51] mt-4 whitespace-pre-line">${m.summary}</p>
+    `;
+    return card;
+  }
 
-    weeklyData.matchups.forEach(m => matchupsGrid.appendChild(createMatchupCard(m)));
-    weeklyData.headlines.forEach(h => headlinesContainer.appendChild(createHeadlineCard(h)));
+  function createHeadlineCard(h) {
+    const card = document.createElement('div');
+    card.className = 'bg-white p-6 rounded-2xl shadow-sm border border-gray-200';
+    card.innerHTML = `
+      <h3 class="text-xl font-bold text-[#3D352E] mb-2 whitespace-pre-line">${h.title}</h3>
+      <p class="text-[#6B5F51] whitespace-pre-line">${h.summary}</p>
+    `;
+    return card;
+  }
 
-    viewToggles.forEach(toggle => {
-        toggle.addEventListener('click', () => {
-            const viewName = toggle.dataset.view;
-            views.forEach(view => view.classList.toggle('hidden', view.id !== `${viewName}-view`));
-            viewToggles.forEach(t => {
-                t.classList.toggle('nav-active', t.dataset.view === viewName);
-                t.classList.toggle('nav-inactive', t.dataset.view !== viewName);
-            });
-        });
+  weeklyData.matchups.forEach(m => matchupsGrid.appendChild(createMatchupCard(m)));
+  weeklyData.headlines.forEach(h => headlinesContainer.appendChild(createHeadlineCard(h)));
+
+  // view toggles
+  viewToggles.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const viewName = btn.dataset.view;
+      views.forEach(v => v.classList.toggle('hidden', v.id !== `${viewName}-view`));
+      viewToggles.forEach(t => {
+        t.classList.toggle('nav-active', t.dataset.view === viewName);
+        t.classList.toggle('nav-inactive', t.dataset.view !== viewName);
+      });
     });
+  });
 
-    // Chart
-    let chartInstance = null;
-    let isChartSorted = false;
+  // Chart
+  let chartInstance = null;
+  let isChartSorted = false;
 
-    function renderChart(sorted = false) {
-        const teamsData = weeklyData.matchups.flatMap(m => [m.team1, m.team2]);
-        if (sorted) teamsData.sort((a, b) => b.score - a.score);
+  function renderChart(sorted=false){
+    // Exclude entries with missing scores
+    const teamsData = weeklyData.matchups.flatMap(m => [m.team1, m.team2]).filter(t => isNum(t.score));
+    if (sorted) teamsData.sort((a,b)=>b.score-a.score);
 
-        const ctx = document.getElementById('scoresChart').getContext('2d');
-        if (chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: teamsData.map(t => t.name),
-                datasets: [{
-                    label: 'Points Scored',
-                    data: teamsData.map(t => t.score),
-                    backgroundColor: '#D6CDBF',
-                    borderColor: '#3D352E',
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: (ctx) => ` Score: ${ctx.raw.toFixed(2)}` } }
-                },
-                scales: {
-                    x: { beginAtZero: true, grid: { color: '#EFEAE4' }, ticks: { color: '#6B5F51' } },
-                    y: { grid: { display: false }, ticks: { color: '#3D352E', font: { weight: '600' } } }
-                }
-            }
-        });
-    }
-
-    document.getElementById('sort-chart-btn').addEventListener('click', () => {
-        isChartSorted = !isChartSorted;
-        renderChart(isChartSorted);
-        document.getElementById('sort-chart-btn').textContent = isChartSorted ? 'Unsort' : 'Sort High to Low';
+    const ctx = document.getElementById('scoresChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: teamsData.map(t => t.name),
+        datasets: [{
+          label: 'Points Scored',
+          data: teamsData.map(t => t.score),
+          backgroundColor: '#D6CDBF',
+          borderColor: '#3D352E',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx) => ` Score: ${Number(ctx.raw).toFixed(2)}` } }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: '#EFEAE4' }, ticks: { color: '#6B5F51' } },
+          y: { grid: { display: false }, ticks: { color: '#3D352E', font: { weight: '600' } } }
+        }
+      }
     });
+  }
 
-    // Render chart when analysis tab is first opened
-    document.querySelector('button[data-view="analysis"]').addEventListener('click', () => {
-        if (!chartInstance) renderChart(isChartSorted);
-    }, { once: true });
+  document.getElementById('sort-chart-btn').addEventListener('click', () => {
+    isChartSorted = !isChartSorted;
+    renderChart(isChartSorted);
+    document.getElementById('sort-chart-btn').textContent = isChartSorted ? 'Unsort' : 'Sort High to Low';
+  });
+
+  // Render chart when analysis tab is first opened
+  document.querySelector('button[data-view="analysis"]').addEventListener('click', () => {
+    if (!chartInstance) renderChart(isChartSorted);
+  }, { once: true });
 });
 </script>
 </body>
 </html>
-
+```
 
 
 
